@@ -1,11 +1,11 @@
-$numsteps = 20000;
+$numsteps = 3;
 
 $x=0.38;
 $x[0]=0.38;
 
 $a = 3.8;
 
-$r = 0.005;
+$r = 0;#0.005;
 
 if ($a > 0) {
     $a[0] = $a
@@ -15,20 +15,20 @@ else {
 };
 
 for ($n = 0; $n < $numsteps; $n++) {
-#    print "----------\n";
-#    print "x == $x\n";
+    print "----------\n";
+    print "x == $x\n";
 
     $f = $x;
 
-#    print "f == $f\n";
+    print "f == $f\n";
 
     for ($k = 1; $k <= 32; $k++) {
         $x = $a[$n] * $x * (1 - $x);
-#        print "mid x == $x\n";
+        print "m: x == $x\n";
     }
     $x = $x + (rand(1) - 0.5) * $r;
     
-#    print "x == $x\n";
+    print "x == $x\n";
 
     if ($x > 1) { $x = 0.999 }
     if ($x < 0) { $x = 0.001 }
