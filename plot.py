@@ -1,3 +1,6 @@
+import matplotlib
+#matplotlib.use('MacOSX')
+
 import matplotlib.pyplot as plt
 
 with open('param-values.txt', 'rU') as in_file:
