@@ -2,6 +2,23 @@ import random
 
 # -----------------------------
 
+def tent_map_function(x, a):
+#    print 'x: ', x, '\ta: ', a
+    return a * min(x, 1 - x)
+
+# -----------------------------
+
+def logistic_map_function(x, a):
+    return a * x * (1.0 - x)
+
+# -----------------------------
+
+def dynamics_function(x, a):
+#    return logistic_map_function(x, a)
+    return tent_map_function(x, a)
+
+# -----------------------------
+
 def iterations(steps = 1000, initial_x = 0.38, initial_a = 3.8, r = 0.005):
     x_ = initial_x
     x = []
@@ -13,7 +30,8 @@ def iterations(steps = 1000, initial_x = 0.38, initial_a = 3.8, r = 0.005):
         f = x_
     
         for k in range(1, 33):
-            x_ = a[n] * x_ * (1.0 - x_)
+#            x_ = a[n] * x_ * (1.0 - x_)
+            x_ = dynamics_function(x_, a[n])
         
         x_ = x_ + (random.random() - 0.5) * r
     
@@ -30,12 +48,13 @@ def iterations(steps = 1000, initial_x = 0.38, initial_a = 3.8, r = 0.005):
         if a[n+1] < 0:
             a[n+1] = 0.0
         
-        if a[n+1] > 4:
-            a[n+1] = 4.0
+        if a[n+1] > 2:
+            a[n+1] = 2.0
     
         for k in range(1, 32):
-            x_ = a[n] * x_ * (1.0 - x_)
-    
+#            x_ = a[n] * x_ * (1.0 - x_)
+            x_ = dynamics_function(x_, a[n])
+
     return a
 
 # -----------------------------
@@ -53,15 +72,18 @@ def plot_parameters(inputs):
 
 # -----------------------------
 
-a1 = iterations(steps = 1000, r = 0.0)
-a2 = iterations(steps = 1000, r = 0.005)
+#a1 = iterations(steps = 1000, r = 0.0)
+#a2 = iterations(steps = 1000, r = 0.005)
+
+n = 2000
 
 a = []
-a.append(iterations(steps = 1000, initial_x = 0.38, initial_a = 3.9, r = 0.005))
-a.append(iterations(steps = 1000, initial_x = 0.38, initial_a = 3.8, r = 0.005))
-a.append(iterations(steps = 1000, initial_x = 0.38, initial_a = 3.7, r = 0.005))
-a.append(iterations(steps = 1000, initial_x = 0.38, initial_a = 3.6, r = 0.005))
-a.append(iterations(steps = 1000, initial_x = 0.38, initial_a = 3.5, r = 0.005))
+a.append(iterations(steps = n, initial_x = 0.38, initial_a = 1.9, r = 0.0005))
+a.append(iterations(steps = n, initial_x = 0.38, initial_a = 1.8, r = 0.0005))
+a.append(iterations(steps = n, initial_x = 0.38, initial_a = 1.7, r = 0.0005))
+a.append(iterations(steps = n, initial_x = 0.38, initial_a = 1.6, r = 0.0005))
+a.append(iterations(steps = n, initial_x = 0.38, initial_a = 1.5, r = 0.0005))
+a.append(iterations(steps = n, initial_x = 0.38, initial_a = 1.4, r = 0.0005))
 
 plot_parameters(a)
 
