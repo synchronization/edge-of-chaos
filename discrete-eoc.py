@@ -4,11 +4,16 @@ __author__ = "Roozbeh Daneshvar"
 __email__ = "roozbeh.daneshvar@gmail.com"
 
 import random
+import math as math
+
+# -----------------------------
+
+def sine_map_function(x, a):
+    return a * math.sin(math.pi * x)
 
 # -----------------------------
 
 def tent_map_function(x, a):
-#    print 'x: ', x, '\ta: ', a
     return a * min(x, 1 - x)
 
 # -----------------------------
@@ -21,6 +26,7 @@ def logistic_map_function(x, a):
 def dynamics_function(x, a):
 #    return logistic_map_function(x, a)
     return tent_map_function(x, a)
+#    return sine_map_function(x, a)
 
 # -----------------------------
 
@@ -80,15 +86,14 @@ def plot_parameters(inputs):
 #a1 = iterations(steps = 1000, r = 0.0)
 #a2 = iterations(steps = 1000, r = 0.005)
 
-n = 2000
+n = 16000
+randomness = 0.00005
 
 a = []
-a.append(iterations(steps = n, initial_x = 0.38, initial_a = 1.9, r = 0.0005))
-a.append(iterations(steps = n, initial_x = 0.38, initial_a = 1.8, r = 0.0005))
-a.append(iterations(steps = n, initial_x = 0.38, initial_a = 1.7, r = 0.0005))
-a.append(iterations(steps = n, initial_x = 0.38, initial_a = 1.6, r = 0.0005))
-a.append(iterations(steps = n, initial_x = 0.38, initial_a = 1.5, r = 0.0005))
-a.append(iterations(steps = n, initial_x = 0.38, initial_a = 1.4, r = 0.0005))
+#initial_as = [0.3, 0.7, 1.0, 1.4]
+initial_as = [1.4, 1.5, 1.6, 1.7, 1.8, 1.9]
+for ia in initial_as:
+    a.append(iterations(steps = n, initial_x = 0.38, initial_a = ia, r = randomness))
 
 plot_parameters(a)
 
