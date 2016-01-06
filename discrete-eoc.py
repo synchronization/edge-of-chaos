@@ -1,3 +1,8 @@
+#!/usr/local/bin/python2.7
+
+__author__ = "Roozbeh Daneshvar"
+__email__ = "roozbeh.daneshvar@gmail.com"
+
 import random
 
 # -----------------------------
