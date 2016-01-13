@@ -55,7 +55,7 @@ def create_sequence(ic=0.5, a=1.5, n=10):
 
 # -----------------------------
 
-def iterations(steps = 1000, initial_x = 0.38, initial_a = 3.8, r = 0.005, min_x = 0.0, max_x = 1.0, min_a = 0, max_a = 2.0):
+def adapt(steps = 1000, initial_x = 0.38, initial_a = 3.8, r = 0.005, min_x = 0.0, max_x = 1.0, min_a = 0, max_a = 4.0):
     x_ = initial_x
     x = []
     a_ = initial_a
@@ -69,22 +69,23 @@ def iterations(steps = 1000, initial_x = 0.38, initial_a = 3.8, r = 0.005, min_x
         
         x_ = x_ + (random.random() - 0.5) * r
     
-        if x_ > 1:
-            x_ = 0.999
+        if x_ > max_x:
+            x_ = max_x - 0.001#0.999
         if x_ < 0:
-            x_ = 0.001
+            x_ = min_x + 0.001#0.001
     
         f = f - x_
     
         x.append(x_)
         a.append(a[n] + 0.1 * f)
     
-        if a[n+1] < 0:
-            a[n+1] = 0.0
-        if a[n+1] > 2:
-            a[n+1] = 2.0
+        if a[n+1] < min_a:
+            a[n+1] = min_a
+        if a[n+1] > max_a:
+            a[n+1] = max_a
     
         for k in range(1, 32):
+#        for k in range(0, 32):
             x_ = dynamics_function(x_, a[n])
 
     return a
@@ -125,7 +126,7 @@ def frequency_spectrum():
     y = np.sin(2 * np.pi * ff * t) + np.sin(2 * np.pi * 9 * t)
 
     #y = [0, 1, 2, 1, 0, -1, -2, -1]
-    #y = iterations(steps = len(t), initial_x = 0.38, initial_a = 1.7, r = 0)
+    #y = adapt(steps = len(t), initial_x = 0.38, initial_a = 1.7, r = 0)
     result = create_sequence(ic=result[-1], a=3.2, n=len(t))
     y = result
     print 'y: ', y
@@ -149,22 +150,28 @@ def frequency_spectrum():
 
 if __name__ == "__main__":
     # transient
-    result = create_sequence(ic=0.5, a=3.2, n=100)
-    print 'transient result: ', result
+#    result = create_sequence(ic=0.5, a=3.2, n=100)
+#    print 'transient result: ', result
     # actual
-    result = create_sequence(ic=result[-1], a=3.2, n=100)
-    print 'actual result: ', result
+#    result = create_sequence(ic=result[-1], a=3.2, n=100)
+#    print 'actual result: ', result
 
     #sys.exit(0)
 
-    #a1 = iterations(steps = 1000, r = 0.0)
-    #a2 = iterations(steps = 1000, r = 0.005)
+    #a1 = adapt(steps = 1000, r = 0.0)
+    #a2 = adapt(steps = 1000, r = 0.005)
 
     #initial_as = [0.3, 0.7, 1.0, 1.4]
     #initial_as = [1.4, 1.5, 1.6, 1.7, 1.8, 1.9]
-    #for ia in initial_as:
-    #    a.append(iterations(steps = n, initial_x = 0.38, initial_a = ia, r = randomness))
+    n = 400
+    randomness= 0.0#0.005
+#    initial_as = [3.5, 3.8, 3.9]
+#    initial_as = [x*0.5 for x in range(2*x1, 2*x2+1)]
+    initial_as = np.arange(3.4, 4.0, 0.02)
+    parameters = []
+    for ia in initial_as:
+        parameters.append(adapt(steps = n, initial_x = 0.43, initial_a = ia, r = randomness, max_x = 1.0, max_a = 4.0))
 
-    #plot_time_series(a)
+    plot_time_series(parameters)
 
 # -----------------------------
