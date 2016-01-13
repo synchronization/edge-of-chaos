@@ -10,6 +10,8 @@ import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
 
+import sys
+
 # -----------------------------
 
 def sine_map_function(x, a):
@@ -28,9 +30,28 @@ def logistic_map_function(x, a):
 # -----------------------------
 
 def dynamics_function(x, a):
-#    return logistic_map_function(x, a)
-    return tent_map_function(x, a)
+    return logistic_map_function(x, a)
+#    return tent_map_function(x, a)
 #    return sine_map_function(x, a)
+
+# -----------------------------
+
+def create_sequence(ic, a, n):
+    """
+    ic: initial condition (number to start with)
+    a: parameter
+    n: number of items in the list (iterations)
+
+    returns: a list of numbers
+    """
+    result = [None] * n
+    x = ic
+    result[0] = x
+    for i in range(1, n):
+        x = dynamics_function(x, a)
+        result[i] = x
+
+    return result
 
 # -----------------------------
 
@@ -84,6 +105,15 @@ def plot_parameters(inputs):
 
 # -----------------------------
 
+# transient
+result = create_sequence(0.5, 3.2, 100)
+print 'transient result: ', result
+# actual
+result = create_sequence(result[-1], 3.2, 100)
+print 'actual result: ', result
+
+#sys.exit(0)
+
 #a1 = iterations(steps = 1000, r = 0.0)
 #a2 = iterations(steps = 1000, r = 0.005)
 
@@ -121,7 +151,9 @@ ff = 5;   # frequency of the signal
 y = np.sin(2 * np.pi * ff * t) + np.sin(2 * np.pi * 9 * t)
 
 #y = [0, 1, 2, 1, 0, -1, -2, -1]
-y = iterations(steps = len(t), initial_x = 0.38, initial_a = 1.7, r = 0)
+#y = iterations(steps = len(t), initial_x = 0.38, initial_a = 1.7, r = 0)
+result = create_sequence(result[-1], 3.2, len(t))
+y = result
 print 'y: ', y
 
 n = len(y) # length of the signal
