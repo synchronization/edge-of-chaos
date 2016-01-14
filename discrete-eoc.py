@@ -92,6 +92,42 @@ def adapt(steps = 1000, initial_x = 0.38, initial_a = 3.8, r = 0.005, min_x = 0.
 
 # -----------------------------
 
+def PRLadapt(steps = 450, initial_x = 0.38, initial_a = 3.8, r = 0.000, min_x = 0.0, max_x = 1.0, min_a = 0.0, max_a = 4.0):
+    x_ = initial_x
+    x = []
+    a_ = initial_a
+    a = [a_]
+
+    for n in range(steps):
+        f = x_
+    
+        for k in range(0, 20):
+            x_ = dynamics_function(x_, a[n])
+        
+        x_ = x_ + (random.random() - 0.5) * r
+    
+        if x_ > max_x:
+            x_ = max_x - 0.001#0.999
+        if x_ < 0:
+            x_ = min_x + 0.001#0.001
+    
+        f = f - x_
+    
+        x.append(x_)
+        a.append(a[n] + 0.1 * f)
+    
+        if a[n+1] < min_a:
+            a[n+1] = min_a
+        if a[n+1] > max_a:
+            a[n+1] = max_a
+    
+#        for k in range(1, 32):
+#            x_ = dynamics_function(x_, a[n])
+
+    return a
+
+# -----------------------------
+
 def plot_time_series(inputs):
     ax = plt.gca()
     ax.ticklabel_format(useOffset=False)
@@ -163,14 +199,14 @@ if __name__ == "__main__":
 
     #initial_as = [0.3, 0.7, 1.0, 1.4]
     #initial_as = [1.4, 1.5, 1.6, 1.7, 1.8, 1.9]
-    n = 400
+    n = 450
     randomness= 0.0#0.005
-#    initial_as = [3.5, 3.8, 3.9]
+    initial_as = [3.5, 3.8, 3.9]
 #    initial_as = [x*0.5 for x in range(2*x1, 2*x2+1)]
-    initial_as = np.arange(3.4, 4.0, 0.02)
+#    initial_as = np.arange(3.4, 4.0, 0.02)
     parameters = []
     for ia in initial_as:
-        parameters.append(adapt(steps = n, initial_x = 0.43, initial_a = ia, r = randomness, max_x = 1.0, max_a = 4.0))
+        parameters.append(PRLadapt(steps = n, initial_x = 0.43, initial_a = ia, r = randomness, max_x = 1.0, max_a = 4.0))
 
     plot_time_series(parameters)
 
