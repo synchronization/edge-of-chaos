@@ -102,7 +102,8 @@ def PRLadapt(steps = 450, initial_x = 0.38, initial_a = 3.8, r = 0.000, min_x = 
         f = x_
     
         for k in range(0, 20):
-            x_ = dynamics_function(x_, a[n])
+#            x_ = dynamics_function(x_, a[n])
+            x_ = dynamics_function(x_, a[-1])
         
         x_ = x_ + (random.random() - 0.5) * r
     
@@ -112,29 +113,34 @@ def PRLadapt(steps = 450, initial_x = 0.38, initial_a = 3.8, r = 0.000, min_x = 
             x_ = min_x + 0.001#0.001
             
         beta_n1 = 0.0
-        for t in range(0, 20):
-            print '-----------'
-#            print 'x: ', x
-#            print
-#            print 't: ', t
-#            print 'n: ', n
-#            print
-#            print 't + n - 20 + 1: ', t + n - 20 + 1
-            if (t + n - 20 + 1) > len(x):
-                beta_n1 = beta_n1 + x[t + n - 20 + 1] * math.cos(2.0 * math.pi * t / 20.0)
-                print 'x[t + n - 20 + 1] * math.cos(2.0 * math.pi * t / 20.0): ', x[t + n - 20 + 1] * math.cos(2.0 * math.pi * t / 20.0)
+        if n % 20 == 0 and n != 0:
+#            print 'n % 20 == 0 and n == ', n
+            for t in range(0, 20):
+                #            print '-----------'
+                #            print 'x: ', x
+                #            print
+                #            print 't: ', t
+                #            print 'n: ', n
+                #            print
+                #            print 't + n - 20 + 1: ', t + n - 20 + 1
+#                if (t + n - 20 + 1) > len(x):
+#                print 'len(x) == ', len(x)
+#                print 't + n - 20 + 0 == ', t + n - 20 + 0
+                beta_n1 = beta_n1 + x[t + n - 20 + 0] * math.cos(2.0 * math.pi * t / 20.0)
+#                print 'x[t + n - 20 + 0] * math.cos(2.0 * math.pi * t / 20.0): ', x[t + n - 20 + 0] * math.cos(2.0 * math.pi * t / 20.0)
 
-        beta_n1 = (2.0 / 20.0) * beta_n1
-            
-        f = 0.1 * beta_n1
+            beta_n1 = (2.0 / 20.0) * beta_n1
+            f = 0.1 * beta_n1
+#            a.append(a[n] + f)
+            a.append(a[-1] + f)
     
         x.append(x_)
-        a.append(a[n] + f)
+#        a.append(a[n] + f)
     
-        if a[n+1] < min_a:
-            a[n+1] = min_a
-        if a[n+1] > max_a:
-            a[n+1] = max_a
+#        if a[n+1] < min_a:
+#            a[n+1] = min_a
+#        if a[n+1] > max_a:
+#            a[n+1] = max_a
     
 #        for k in range(1, 32):
 #            x_ = dynamics_function(x_, a[n])
@@ -212,9 +218,14 @@ if __name__ == "__main__":
     #a1 = adapt(steps = 1000, r = 0.0)
     #a2 = adapt(steps = 1000, r = 0.005)
 
+#    seq = create_sequence(ic=0.37, a=3.5, n=100)
+#    print seq
+
+#    sys.exit(0)
+
     #initial_as = [0.3, 0.7, 1.0, 1.4]
     #initial_as = [1.4, 1.5, 1.6, 1.7, 1.8, 1.9]
-    n = 450
+    n = 450 * 20
     randomness= 0.0#0.005
     initial_as = [3.5, 3.8, 3.9]
 #    initial_as = [x*0.5 for x in range(2*x1, 2*x2+1)]
