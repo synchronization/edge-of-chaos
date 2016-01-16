@@ -100,57 +100,40 @@ def PRLadapt(steps = 450, initial_x = 0.38, initial_a = 3.8, r = 0.000, min_x = 
 
     for n in range(steps):
         f = x_
-    
-        for k in range(0, 20):
-#            x_ = dynamics_function(x_, a[n])
-            x_ = dynamics_function(x_, a[-1])
+
+        # iterations without adaptation
+#        for k in range(0, 20):
+        x_ = dynamics_function(x_, a[-1])
+        x.append(x_)
         
-        x_ = x_ + (random.random() - 0.5) * r
-    
         if x_ > max_x:
             x_ = max_x - 0.001#0.999
         if x_ < 0:
             x_ = min_x + 0.001#0.001
             
-        beta_n1 = 0.0
         if n % 20 == 0 and n != 0:
-#            print 'n % 20 == 0 and n == ', n
+            beta_n1 = 0.0
             for t in range(0, 20):
-                #            print '-----------'
-                #            print 'x: ', x
-                #            print
-                #            print 't: ', t
-                #            print 'n: ', n
-                #            print
-                #            print 't + n - 20 + 1: ', t + n - 20 + 1
-#                if (t + n - 20 + 1) > len(x):
-#                print 'len(x) == ', len(x)
-#                print 't + n - 20 + 0 == ', t + n - 20 + 0
                 beta_n1 = beta_n1 + x[t + n - 20 + 0] * math.cos(2.0 * math.pi * t / 20.0)
-#                print 'x[t + n - 20 + 0] * math.cos(2.0 * math.pi * t / 20.0): ', x[t + n - 20 + 0] * math.cos(2.0 * math.pi * t / 20.0)
 
             beta_n1 = (2.0 / 20.0) * beta_n1
             f = 0.1 * beta_n1
-#            a.append(a[n] + f)
             a.append(a[-1] + f)
     
-        x.append(x_)
-#        a.append(a[n] + f)
+#        x.append(x_)
     
 #        if a[n+1] < min_a:
 #            a[n+1] = min_a
 #        if a[n+1] > max_a:
 #            a[n+1] = max_a
     
-#        for k in range(1, 32):
-#            x_ = dynamics_function(x_, a[n])
-
     return a
 
 # -----------------------------
 
 def plot_time_series(inputs):
     ax = plt.gca()
+    ax.set_ylim([3.4, 4.1])
     ax.ticklabel_format(useOffset=False)
     for a in inputs:
         plt.plot(a)
@@ -226,8 +209,9 @@ if __name__ == "__main__":
     #initial_as = [0.3, 0.7, 1.0, 1.4]
     #initial_as = [1.4, 1.5, 1.6, 1.7, 1.8, 1.9]
     n = 450 * 20
-    randomness= 0.0#0.005
+    randomness= 0.000#0.005
     initial_as = [3.5, 3.8, 3.9]
+#    initial_as = [3.5, 3.6, 3.7, 3.8, 3.9]
 #    initial_as = [x*0.5 for x in range(2*x1, 2*x2+1)]
 #    initial_as = np.arange(3.4, 4.0, 0.02)
     parameters = []
