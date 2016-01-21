@@ -44,6 +44,7 @@ def create_sequence(ic=0.5, a=1.5, n=10):
 
     returns: a list of numbers
     """
+
     result = [None] * n
     x = ic
     result[0] = x
@@ -56,6 +57,10 @@ def create_sequence(ic=0.5, a=1.5, n=10):
 # -----------------------------
 
 def adapt(steps = 1000, initial_x = 0.38, initial_a = 3.8, r = 0.005, min_x = 0.0, max_x = 1.0, min_a = 0, max_a = 4.0):
+    """
+    General function for implementing adaptation
+    """
+
     x_ = initial_x
     x = []
     a_ = initial_a
@@ -136,6 +141,13 @@ def PRLadapt(steps=450, initial_x=0.25, initial_a=3.8, r=0.000, min_x=0.0, max_x
 # -----------------------------
 
 def plot_time_series(inputs, title = ''):
+    """
+    Plots a group of time series and plots them all in one chart
+
+    inputs: a list of lists, e.g. [[1, 2, 3], [1, 4, 8], [5, 8, 3]]
+    title: title for each chart, e.g. "initial condition for x == 0.25"
+    """
+
     ax = plt.gca()
     ax.set_ylim([3.4, 4.1])
     ax.ticklabel_format(useOffset=False)
