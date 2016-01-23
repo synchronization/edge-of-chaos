@@ -118,20 +118,25 @@ def PRLadapt(steps=450, initial_x=0.25, initial_a=3.8, r=0.000, min_x=0.0, max_x
         x.append(x_)
 
         if n % N == 0 and n != 0:
+            # time to adjust a
             beta_n1 = 0.0
             for t in range(0, N):
                 beta_n1 = beta_n1 + x[t + n - N + 0] * math.cos(2.0 * math.pi * t / N)
 
             beta_n1 = (2.0 / N) * beta_n1
             f = 0.1 * beta_n1
-            new_a = a[-1] + f
+        else:
+            # a does not change
+            f = 0
 
-            if new_a > max_a:
-                new_a = max_a - 0.001
-            if new_a < min_a:
-                new_a = min_a + 0.001
+        new_a = a[-1] + f
 
-            a.append(new_a)
+        if new_a > max_a:
+            new_a = max_a - 0.001
+        if new_a < min_a:
+            new_a = min_a + 0.001
+
+        a.append(new_a)
     
     print 'x: ', x
     print 'a: ', a
