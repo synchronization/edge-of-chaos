@@ -103,11 +103,12 @@ def PRLadapt(steps=450, initial_x=0.25, initial_a=3.8, r=0.000, min_x=0.0, max_x
     """
 
     x_ = initial_x
-    x = []
+#    xs = []
+    xs = [initial_x]
     a_ = initial_a
     a = [a_]
 
-    for n in range(steps):
+    for n in range(1, steps):
         x_ = dynamics_function(x_, a[-1])
         
         if x_ > max_x:
@@ -115,31 +116,51 @@ def PRLadapt(steps=450, initial_x=0.25, initial_a=3.8, r=0.000, min_x=0.0, max_x
         if x_ < min_x:
             x_ = min_x + 0.001#0.001
             
-        x.append(x_)
+#        xs.append(x_)
 
         if n % N == 0 and n != 0:
             # time to adjust a
+#            print
+#            print 'time to adjust a, as n == ', n
             beta_n1 = 0.0
             for t in range(0, N):
-                beta_n1 = beta_n1 + x[t + n - N + 0] * math.cos(2.0 * math.pi * t / N)
+                beta_n1 = beta_n1 + xs[t + n - N + 0] * math.cos(2.0 * math.pi * t / N)
 
             beta_n1 = (2.0 / N) * beta_n1
+#            print 'before setting f, beta_n1 == ', beta_n1
             f = 0.1 * beta_n1
+
+            # add a to the list only if we had an update
+            new_a = a[-1] + f
+
+            if new_a > max_a:
+                new_a = max_a - 0.001
+            if new_a < min_a:
+                new_a = min_a + 0.001
+
+            a.append(new_a)
         else:
             # a does not change
             f = 0
 
-        new_a = a[-1] + f
+#        if x_ > max_x:
+#            x_ = max_x - 0.001#0.999
+#        if x_ < min_x:
+#            x_ = min_x + 0.001#0.001
 
-        if new_a > max_a:
-            new_a = max_a - 0.001
-        if new_a < min_a:
-            new_a = min_a + 0.001
+        xs.append(x_)
 
-        a.append(new_a)
+#        new_a = a[-1] + f
+#
+#        if new_a > max_a:
+#            new_a = max_a - 0.001
+#        if new_a < min_a:
+#            new_a = min_a + 0.001
+#
+#        a.append(new_a)
     
-    print 'x: ', x
-    print 'a: ', a
+#    print 'xs: ', xs
+#    print 'a: ', a
     
     return a
 
@@ -227,25 +248,40 @@ if __name__ == "__main__":
 #    seq = create_sequence(ic=0.37, a=3.5, n=100)
 #    print seq
 
+#    initial_xs = np.arange(0.1, 0.9, 0.1)
+#    initial_xs = [0.25]
+#    for x in initial_xs:
+#        result = create_sequence(ic=x, a=3.5, n=10)
+#        print
+#        print 'for x == ', x
+#        print ', result: ', result
 #    sys.exit(0)
 
     #initial_as = [0.3, 0.7, 1.0, 1.4]
     #initial_as = [1.4, 1.5, 1.6, 1.7, 1.8, 1.9]
-#    n = 450 * 20
-    n = 6
+    n = 450 * 20
+#    n = 450
     randomness= 0.000#0.005
     initial_as = [3.5, 3.8, 3.9]
+#    initial_as = [3.5]
 #    initial_as = [3.5, 3.6, 3.7, 3.8, 3.9]
 #    initial_as = [x*0.5 for x in range(2*x1, 2*x2+1)]
 #    initial_as = np.arange(3.4, 4.0, 0.02)
-    initial_xs = np.arange(0.2, 0.3, 0.05)
+#    initial_xs = np.arange(0.2, 0.3, 0.05)
+#    initial_xs = [0.75]
+    initial_xs = np.arange(0.0, 1.0, 0.025)
 
     for icx in initial_xs:#np.arange(0.2, 0.3, 0.05):
 #    for icx in np.arange(0.94, 0.95, 0.001):
         parameters = []
-        for ia in initial_as:
-            parameters.append(PRLadapt(steps = n, initial_x = icx, initial_a = ia, r = randomness, max_x = 1.0, max_a = 4.0, N=2))
+        for ica in initial_as:
+            result = PRLadapt(steps = n, initial_x = icx, initial_a = ica, r = randomness, max_x = 1.0, max_a = 4.0, N=20)
+            print
+            print 'icx: ', icx
+            print 'ica: ', ica
+            print 'result[-1]: ', result[-1]
+            parameters.append(result)
 
-        plot_time_series(parameters, title = 'initial x == ' + str(icx))
+#        plot_time_series(parameters, title = 'initial x == ' + str(icx))
 
 # -----------------------------
