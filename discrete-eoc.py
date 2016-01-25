@@ -276,10 +276,18 @@ if __name__ == "__main__":
         parameters = []
         for ica in initial_as:
             result = PRLadapt(steps = n, initial_x = icx, initial_a = ica, r = randomness, max_x = 1.0, max_a = 4.0, N=20)
-            print
-            print 'icx: ', icx
-            print 'ica: ', ica
-            print 'result[-1]: ', result[-1]
+            PRLcondition = False
+            if ica == 3.9 and result[-1] > ica:
+                PRLcondition = True
+            if ica == 3.8 and result[-1] < ica:
+                PRLcondition = True
+
+            if PRLcondition:
+                print
+                print 'icx: ', icx
+                print 'ica: ', ica
+                print 'result[-1]: ', result[-1]
+
             parameters.append(result)
 
 #        plot_time_series(parameters, title = 'initial x == ' + str(icx))
